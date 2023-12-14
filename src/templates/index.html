@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pooper Recommendations</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="https://kit.fontawesome.com/{{ fa_token }}.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script async src="{{ umami_url }}" data-website-id="{{ umami_key }}"></script>
+</head>
+<body class="bg-white font-body" >
+  <nav class="flex flex-row justify-between items-center px-4 py-2 bg-gray-50 shadow-sm">
+    <a href="/">
+      <img src="{{ url_for('static', filename='movie.png') }}" alt="Movie & TV Recommendations" class="h-10 w-10 mr-4">
+    </a>
+    <ul class="flex flex-row space-x-4">
+      <li>
+        <a href="/about" class="inline-flex rounded-lg px-4 py-2 text-base font-bold text-white bg-indigo-500 hover:bg-indigo-600 shadow-md">About</a>
+      </li>
+      <li>
+        <a href="/contact" class="inline-flex rounded-lg px-4 py-2 text-base font-bold text-white bg-indigo-500 hover:bg-emerald-600 shadow-md">Contact</a>
+      </li>
+    </ul>
+  </nav>
+  
+    <main class="container mx-auto px-4 py-10 md:max-w-2xl">
+      <div id="loading" class="fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 text-white z-50 hidden">
+        <div class="p-4 rounded-lg bg-white shadow-md">
+          <p class="ml-4 text-lg text-gray-800 mb-2">Loading recommendations, please be patient.</p>
+        </div>
+        <i class="fas fa-robot text-5xl animate-spin mt-4"></i>
+      </div>
+                  
+
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Get personalized movie & TV recommendations</h1>
+        <form id="my-form" action="/" method="POST" class="flex flex-col items-center justify-center">
+            <input type="text" id="prompt" name="prompt" required class="rounded-lg shadow-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 p-2.5 text-base font-normal text-gray-700 w-full" placeholder="Enter your prompt here">
+            <button 
+              type="submit" 
+              class="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out w-full"
+              data-sitekey="{{ recaptcha_key }}" 
+              data-callback='onSubmit' 
+              data-action='submit'
+              >
+                Get recommendations
+                <i class="fas fa-play ml-1 text-gray-400"></i>
+            </button>
+            <button type="reset" class="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out w-full">Reset form</button>
+        </form>
+        {% if gpt_responses %}
+        <div class="mt-10">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Recommendations for: {{ prompt }}</h3>
+      
+          <div class="flex flex-row justify-between">
+            <div class="flex flex-col w-full mr-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-2">Movies</h4>
+              <table class="table-auto w-full flex-grow text-left text-base text-gray-600">
+                <tbody>
+                  {% for response, url in zip(gpt_responses, omdb_urls) %}
+                    <tr class="border-b border-gray-300 hover:bg-gray-200">
+                      <td class="pl-4 py-2">{{ response }}</td>
+                      <td class="pl-0 py-2 text-right">
+                        {% if url %}
+                          <a href="{{ url }}" target="_blank" class="text-indigo-500 font-medium hover:underline">
+                            View on IMDB
+                            <i class="fas fa-external-link-alt ml-1 text-gray-400"></i>
+                          </a>
+                        {% else %}
+                          No link available
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+                  <section class="mt-10 border rounded-md shadow-md bg-gray-100 p-4">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Example Queries</h3>
+        <ul class="list-none text-base text-gray-600">
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Science Fiction movies before 1980';">
+              Science Fiction movies before 1980
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Trashy TV like The Bachelor';">
+              Trashy TV like The Bachelor
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Top action movies based on books';">
+              Top action movies based on books
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Funny comedies from the 90s';">
+              Funny comedies from the 90s
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Documentaries about climate change';">
+              Documentaries about climate change
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Award-winning foreign films';">
+              Award-winning foreign films
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Cult classic comedies';">
+              Cult classic comedies
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Coming-of-age dramas from the 80s';">
+              Coming-of-age dramas from the 80s
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Heartwarming family movies';">
+              Heartwarming family movies
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Suspenseful thrillers based on true stories';">
+              Suspenseful thrillers based on true stories
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Independent sci-fi movies';">
+              Independent sci-fi movies
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Documentaries about social justice movements';">
+              Documentaries about social justice movements
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Classic animated movies for children';">
+              Classic animated movies for children
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Historical dramas set in ancient civilizations';">
+              Historical dramas set in ancient civilizations
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Best crime documentaries on streaming platforms';">
+              Best crime documentaries on streaming platforms
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Classic horror films from the 70s';">
+              Classic horror films from the 70s
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Top-rated mystery TV series';">
+              Top-rated mystery TV series
+            </a>
+          </li>
+          <li class="flex items-center mb-2 pl-4 border-l-4 border-gray-300 hover:bg-gray-200">
+            <a href="#" onclick="document.getElementById('prompt').value = 'Feel-good romantic comedies';">
+              Feel-good romantic comedies
+            </a>
+          </li>
+                
+        </ul>
+      </section>
+        </main>
+
+        <footer class="flex flex-col space-y-4 justify-center items-center text-center text-sm text-gray-500 py-4 px-4 bg-gray-800">
+          <p class="text-white">© Pooper 2023 | Movie & TV Recommendations | pepperfield</p>
+          <div class="flex items-center space-x-2">
+            <a href="https://umami.pooper.net.au/share/GdjAbDvKnBrxCmN1/recommend.pooper.net.au" class="text-white hover:underline" target="_blank">
+              Analytics
+              <i class="fas fa-external-link-alt text-gray-300"></i>
+            </a>
+            <p>|</p>
+            <a href="https://www.buymeacoffee.com/pepperfield" class="text-white hover:underline">
+              Buy me a beer
+              <i class="fas fa-external-link-alt text-gray-300"></i>
+            </a>
+           </div>
+        </footer>
+            
+</body>
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+<script>
+    function populatePrompt(query) {
+      document.getElementById('prompt').value = query;
+    }
+  </script>
+  <script>
+    document.querySelector('form').addEventListener('submit', function() {
+      document.getElementById('loading').classList.remove('hidden');
+    });
+    </script>
+    
+    <script>
+      function onSubmit(token) {
+        document.getElementById("my-form").submit();
+      }
+    </script>
+   
+</html>

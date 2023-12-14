@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Pooper Recommendations</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="https://kit.fontawesome.com/{{ fa_token }}.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script async src="{{ umami_url }}" data-website-id="{{ umami_key }}"></script>
+</head>
+<body class="bg-white font-body">
+    <nav class="flex flex-row justify-between items-center px-4 py-2 bg-gray-50 shadow-sm">
+        <a href="/">
+          <img src="{{ url_for('static', filename='movie.png') }}" alt="Movie & TV Recommendations" class="h-10 w-10 mr-4">
+        </a>
+        <ul class="flex flex-row space-x-4">
+          <li>
+            <a href="/about" class="inline-flex rounded-full px-4 py-2 text-base font-bold text-white bg-indigo-500 hover:bg-indigo-600 shadow-md">About</a>
+          </li>
+          <li>
+            <a href="/contact" class="inline-flex rounded-full px-4 py-2 text-base font-bold text-white bg-indigo-500 hover:bg-emerald-600 shadow-md">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <main class="container mx-auto px-4 py-10 md:max-w-2xl">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Contact</h1>
+        <p class="mb-8 text-base text-gray-600">
+          This contact form is for any questions or feedback you may have about Pooper Recommendations. We appreciate your input!
+        </p>
+
+        <form id="my-form" action="https://formspree.io/f/xgejgdzj" method="POST" class="flex flex-col items-center justify-center">
+            <label>Email:</label>
+            <input type="email" name="email" class="rounded-lg shadow-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 p-2.5 text-base font-normal text-gray-700 w-full" required>
+            <label>Message:</label>
+            <textarea name="message" class="rounded-lg shadow-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 p-2.5 text-base font-normal text-gray-700 w-full" rows="5" required></textarea>
+            <button id="my-form-button" 
+              class="g-recaptcha mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out w-full"
+              data-sitekey="{{ recaptcha_key }}" 
+              data-callback='onSubmit' 
+              data-action='submit'
+            >
+                Submit
+                <i class="fas fa-envelope ml-1 text-gray-400"></i>
+            </button>
+            <p id="my-form-status"></p>
+          </form>
+    </main>
+
+    <footer class="flex flex-col space-y-4 justify-center items-center text-center text-sm text-gray-500 py-4 px-4 bg-gray-800">
+        <p class="text-white">© Pooper 2023 | Movie & TV Recommendations | pepperfield</p>
+        <div class="flex items-center space-x-2">
+            <a href="https://umami.pooper.net.au/share/GdjAbDvKnBrxCmN1/recommend.pooper.net.au" class="text-white hover:underline" target="_blank">
+                Analytics
+            <i class="fas fa-external-link-alt text-gray-300"></i>
+          </a>
+          <p>|</p>
+          <a href="https://www.buymeacoffee.com/pepperfield" class="text-white hover:underline">
+            Buy me a beer
+            <i class="fas fa-external-link-alt text-gray-300"></i>
+          </a>
+         </div>
+      </footer>
+      
+</body>
+
+<script>
+    var form = document.getElementById("my-form");
+    
+    async function handleSubmit(event) {
+      event.preventDefault();
+      var status = document.getElementById("my-form-status");
+      var data = new FormData(event.target);
+      fetch(event.target.action, {
+        method: form.method,
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+      }).then(response => {
+        if (response.ok) {
+          status.innerHTML = "Thanks for your submission!";
+          form.reset()
+        } else {
+          response.json().then(data => {
+            if (Object.hasOwn(data, 'errors')) {
+              status.innerHTML = data["errors"].map(error => error["message"]).join(", ")
+            } else {
+              status.innerHTML = "Oops! There was a problem submitting your form"
+            }
+          })
+        }
+      }).catch(error => {
+        status.innerHTML = "Oops! There was a problem submitting your form"
+      });
+    }
+    form.addEventListener("submit", handleSubmit)
+</script>
+<script>
+  function onSubmit(token) {
+    document.getElementById("my-form").submit();
+  }
+</script>
+</html>

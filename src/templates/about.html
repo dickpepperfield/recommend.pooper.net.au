@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Pooper Recommendations</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="https://kit.fontawesome.com/{{ fa-token }}.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script async src="{{ umami_url }}" data-website-id="{{ umami_key }}"></script>
+</head>
+<body class="bg-white font-body">
+    <nav class="flex flex-row justify-between items-center px-4 py-2 bg-gray-50 shadow-sm">
+        <a href="/">
+          <img src="{{ url_for('static', filename='movie.png') }}" alt="Movie & TV Recommendations" class="h-10 w-10 mr-4">
+        </a>
+        <ul class="flex flex-row space-x-4">
+          <li>
+            <a href="/about" class="inline-flex rounded-full px-4 py-2 text-base font-bold text-white bg-indigo-500 hover:bg-indigo-600 shadow-md">About</a>
+          </li>
+          <li>
+            <a href="/contact" class="inline-flex rounded-full px-4 py-2 text-base font-bold text-white bg-indigo-500 hover:bg-emerald-600 shadow-md">Contact</a>
+          </li>
+        </ul>
+      </nav>
+          <main class="container mx-auto px-4 py-10 md:max-w-2xl">
+        <div class="flex flex-col">
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Discover Your Next Watch</h1>
+            <p class="text-base text-gray-600 mb-4">
+                Pooper Recommendations is your personalized movie and TV guide, powered by the cutting-edge ChatGPT-4 AI. 
+                Simply tell it what you're in the mood for, and it will generate a curated list of recommendations just for you.
+            </p>
+        </div>
+        
+        <div class="flex flex-col mt-10 space-y-4">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">About</h3>
+            <ul class="list-none text-base text-gray-600 space-y-2">
+                <li>
+                    <br>
+                    I made this application for people to utilize the ChatGPT-4 dataset and utility,
+                    without paying OpenAI $20USD a month. Because the prompt is pretty direct,
+                    and the queries returned are small, it's not costing me a fortune to run this.
+                    <br>
+                    Please don't abuse this, or I'll have to shut it down.
+                    <br>
+                    <p class=py-1">~pepperfield</p>
+                </li>
+
+                <li class="py-4">
+                    Feel free to send me some money if you want to help out with the OpenAI bill :)
+                    <br>
+                    <a href="https://www.buymeacoffee.com/pepperfield" class="text-gray-800 hover:underline justify-center items-center">
+                        Buy me a bigger AI bill.
+                        <i class="fas fa-external-link-alt text-gray-300"></i>
+                      </a>                
+                    </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="flex flex-col space-y-4 justify-center items-center text-center text-sm text-gray-500 py-4 px-4 bg-gray-800">
+        <p class="text-white">© Pooper 2023 | Movie & TV Recommendations | pepperfield</p>
+        <div class="flex items-center space-x-2">
+          <a href="https://umami.pooper.net.au/share/GdjAbDvKnBrxCmN1/recommend.pooper.net.au" class="text-white hover:underline" target="_blank">
+            Analytics
+            <i class="fas fa-external-link-alt text-gray-300"></i>
+          </a>
+          <p>|</p>
+          <a href="https://www.buymeacoffee.com/pepperfield" class="text-white hover:underline">
+            Buy me a beer
+            <i class="fas fa-external-link-alt text-gray-300"></i>
+          </a>
+         </div>
+      </footer>
+          
+
+</body>
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+</html>
