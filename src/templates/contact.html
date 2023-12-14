@@ -33,7 +33,7 @@
           This contact form is for any questions or feedback you may have about Pooper Recommendations. We appreciate your input!
         </p>
 
-        <form id="my-form" action="https://formspree.io/f/xgejgdzj" method="POST" class="flex flex-col items-center justify-center">
+        <form id="my-form" action="https://formspree.io/f/{{ formspree_token }}" method="POST" class="flex flex-col items-center justify-center">
             <label>Email:</label>
             <input type="email" name="email" class="rounded-lg shadow-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 p-2.5 text-base font-normal text-gray-700 w-full" required>
             <label>Message:</label>

@@ -15,6 +15,7 @@ recaptcha_key = os.environ.get("RECAPTCHA_SITE_KEY")
 umami_key = os.environ.get("UMAMI_SITE_KEY")
 umami_url = os.environ.get("UMAMI_URL")
 fa_token = os.environ.get("FA_TOKEN")
+formspree_token = os.environ.get("FORMSPREE_TOKEN")
 
 app = Flask(__name__)
 
@@ -92,7 +93,12 @@ def about():
 
 @app.route('/contact/')
 def contact():
-    return render_template('contact.html', umamu_url=umami_url, umami_key=umami_key, recaptcha_key=recaptcha_key, fa_token=fa_tokens)
+    return render_template('contact.html', 
+                           umamu_url=umami_url, 
+                           umami_key=umami_key, 
+                           recaptcha_key=recaptcha_key, 
+                           fa_token=fa_token, 
+                           formspree_token=formspree_token)
 
 def get_omdb_url(title, year, omdb_api_key):
     base_url = f"https://www.omdbapi.com/?apikey={omdb_api_key}"
